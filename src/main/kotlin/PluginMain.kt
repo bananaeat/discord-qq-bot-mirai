@@ -1,5 +1,6 @@
-package org.example.mirai.plugin
+package org.mirai.qqBotMirai
 
+import net.mamoe.mirai.console.command.CommandManager
 import net.mamoe.mirai.console.permission.AbstractPermitteeId
 import net.mamoe.mirai.console.permission.PermissionService
 import net.mamoe.mirai.console.permission.PermissionService.Companion.hasPermission
@@ -52,6 +53,7 @@ object PluginMain : KotlinPlugin(
         logger.info { "插件已加载" }
         //配置文件目录 "${dataFolder.absolutePath}/"
         val eventChannel = GlobalEventChannel.parentScope(this)
+        CommandManager.registerCommand(CommandSpell)
         eventChannel.subscribeAlways<GroupMessageEvent> {
             //群消息
             //复读示例

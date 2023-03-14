@@ -1,10 +1,11 @@
-package org.example.mirai.plugin
+package org.mirai.qqBotMirai
 
 import kotlinx.serialization.Contextual
 import kotlinx.serialization.Serializable
 import net.mamoe.mirai.console.command.CommandContext
 import net.mamoe.mirai.console.command.CompositeCommand
 import kotlinx.serialization.json.Json
+import net.mamoe.mirai.console.command.SimpleCommand
 import java.io.File
 
 @Serializable
@@ -52,11 +53,11 @@ private fun SearchSpells(key: String, spells: SpellCompendium): List<Spell> {
     // return original response
     return spellList
 }
-object CommandSpell : CompositeCommand(PluginMain, "main") {
+object CommandSpell : SimpleCommand(PluginMain, "main") {
     private val spellsJSON = File("pack/spells.json").readText()
     private val spellC = Json.decodeFromString<SpellCompendium>(SpellCompendium.serializer(), spellsJSON)
 
-    @SubCommand("spellName")
+    @Handler
     suspend fun spellSearch(context: CommandContext, spellName: String) {
         val spellList = SearchSpells(spellName, spellC)
         val queryResult = Utils.Companion.spellSearchFormatter(spellList)

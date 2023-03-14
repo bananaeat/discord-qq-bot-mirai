@@ -1,4 +1,4 @@
-package org.example.mirai.plugin
+package org.mirai.qqBotMirai
 class Utils {
     companion object {
         fun spellSearchFormatter(spellList: List<Spell>): String {
