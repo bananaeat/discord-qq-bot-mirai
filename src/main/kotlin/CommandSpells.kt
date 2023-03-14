@@ -58,7 +58,7 @@ object CommandSpell : SimpleCommand(PluginMain, "main") {
     private val spellC = Json.decodeFromString<SpellCompendium>(SpellCompendium.serializer(), spellsJSON)
 
     @Handler
-    suspend fun spellSearch(context: CommandContext, spellName: String) {
+    suspend fun spell(context: CommandContext, spellName: String) {
         val spellList = SearchSpells(spellName, spellC)
         val queryResult = Utils.Companion.spellSearchFormatter(spellList)
         println(queryResult)
