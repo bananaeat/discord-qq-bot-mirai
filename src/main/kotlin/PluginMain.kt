@@ -1,11 +1,15 @@
 package org.mirai.qqBotMirai
 
+import com.bernardomg.tabletop.dice.interpreter.DiceRoller
+import com.bernardomg.tabletop.dice.parser.DefaultDiceParser
 import net.mamoe.mirai.console.command.CommandManager
+import net.mamoe.mirai.console.command.CommandSender.Companion.toCommandSender
 import net.mamoe.mirai.console.permission.AbstractPermitteeId
 import net.mamoe.mirai.console.permission.PermissionService
 import net.mamoe.mirai.console.permission.PermissionService.Companion.hasPermission
 import net.mamoe.mirai.console.plugin.jvm.JvmPluginDescription
 import net.mamoe.mirai.console.plugin.jvm.KotlinPlugin
+import net.mamoe.mirai.console.util.MessageUtils.messageContentsSequence
 import net.mamoe.mirai.contact.Member
 import net.mamoe.mirai.contact.User
 import net.mamoe.mirai.event.GlobalEventChannel
@@ -13,10 +17,10 @@ import net.mamoe.mirai.event.events.BotInvitedJoinGroupRequestEvent
 import net.mamoe.mirai.event.events.FriendMessageEvent
 import net.mamoe.mirai.event.events.GroupMessageEvent
 import net.mamoe.mirai.event.events.NewFriendRequestEvent
-import net.mamoe.mirai.message.data.Image
+import net.mamoe.mirai.message.data.*
 import net.mamoe.mirai.message.data.Image.Key.queryUrl
-import net.mamoe.mirai.message.data.PlainText
 import net.mamoe.mirai.utils.info
+import org.mirai.qqBotMirai.CommandDice.onCommand
 
 /**
  * 使用 kotlin 版请把
@@ -32,6 +36,8 @@ import net.mamoe.mirai.utils.info
  * 可以使用 `src/test/kotlin/RunMirai.kt` 在 ide 里直接调试，
  * 不用复制到 mirai-console-loader 或其他启动器中调试
  */
+
+val defaultDice = 20
 
 object PluginMain : KotlinPlugin(
     JvmPluginDescription(
@@ -50,36 +56,22 @@ object PluginMain : KotlinPlugin(
     }
 ) {
     override fun onEnable() {
-        logger.info { "插件已加载" }
+        logger.info { "未来：插件已加载" }
         //配置文件目录 "${dataFolder.absolutePath}/"
         val eventChannel = GlobalEventChannel.parentScope(this)
         CommandManager.registerCommand(CommandSpell)
+        CommandManager.registerCommand(CommandDice)
         eventChannel.subscribeAlways<GroupMessageEvent> {
-            //群消息
-            //复读示例
-            if (message.contentToString().startsWith("复读")) {
-                group.sendMessage(message.contentToString().replace("复读", ""))
-            }
-            if (message.contentToString() == "hi") {
-                //群内发送
-                group.sendMessage("hi")
-                //向发送者私聊发送消息
-                sender.sendMessage("hi")
-                //不继续处理
-                return@subscribeAlways
-            }
-            //分类示例
-            message.forEach {
-                //循环每个元素在消息里
-                if (it is Image) {
-                    //如果消息这一部分是图片
-                    val url = it.queryUrl()
-                    group.sendMessage("图片，下载地址$url")
+            var content = message.contentToString()
+            if(content.startsWith(".r") && content[2] != ' ') {
+                if (!content[2].isDigit()) {
+                    content = content.replace("d", "d$defaultDice", ignoreCase = true).substring(3)
                 }
-                if (it is PlainText) {
-                    //如果消息这一部分是纯文本
-                    group.sendMessage("纯文本，内容:${it.content}")
-                }
+                val parser = DefaultDiceParser();
+                val roller = DiceRoller();
+                val rolls = parser.parse(content, roller);
+
+                group.sendMessage("魔法骰子~ " + rolls.toString() + " = " + rolls.totalRoll)
             }
         }
         eventChannel.subscribeAlways<FriendMessageEvent> {
