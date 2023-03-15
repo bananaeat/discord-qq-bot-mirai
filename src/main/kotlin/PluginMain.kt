@@ -71,7 +71,7 @@ object PluginMain : KotlinPlugin(
                 val roller = DiceRoller();
                 val rolls = parser.parse(content, roller);
 
-                group.sendMessage("魔法骰子~ " + rolls.toString() + " = " + rolls.totalRoll)
+                group.sendMessage("魔法骰子投下 " + content + " = " + rolls.toString() + " = " + rolls.totalRoll)
             }
         }
         eventChannel.subscribeAlways<FriendMessageEvent> {
