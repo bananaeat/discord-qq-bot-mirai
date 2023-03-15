@@ -57,6 +57,8 @@ object PluginMain : KotlinPlugin(
 ) {
     override fun onEnable() {
         logger.info { "未来：插件已加载" }
+        UserDataList.reload()
+        logger.info { "已读取用户数据" }
         //配置文件目录 "${dataFolder.absolutePath}/"
         val eventChannel = GlobalEventChannel.parentScope(this)
         CommandManager.registerCommand(CommandSpell)
