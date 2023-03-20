@@ -2,6 +2,9 @@ package org.mirai.qqBotMirai
 class Utils {
     companion object {
         fun spellSearchFormatter(spellList: List<Spell>): String {
+            if(spellList.isEmpty()){
+                return "未找到法术……"
+            }
             var spells = "泉津的法术大全检索：\n\n"
             spellList.take(5).forEach(fun(spell: Spell) {
                 var spellLevel = ""
@@ -40,7 +43,7 @@ class Utils {
                     (if (spell.types.isNotBlank()) ('[' + spell.types + ']') else "") + '\n' +
                     (if (domain.isNotBlank()) ("领域 $domain\n") else "") +
                     "等级 " + spellLevel + '\n' +
-                    "动作 " + spell.action.cost + ' ' + spell.action.type + '\n' +
+                    "施法时间 " + spell.action.cost + ' ' + spell.action.type + '\n' +
                     "成分 " + components + '\n' +
                     "距离 " + range + '\n' +
                     (if (spell.area.isNotBlank()) ("范围 " + spell.area + '\n') else "") +
@@ -52,6 +55,17 @@ class Utils {
                     spell.shortDescription + "\n\n"
             })
             return spells
+        }
+
+        fun conditionSearchFormatter(conditionList: List<Condition>): String {
+            if(conditionList.isEmpty()){
+                return "未找到状态……"
+            }
+            var conditions = "泉津的常见状态检索：\n\n"
+            conditionList.take(5).forEach(fun(cond: Condition){
+                conditions += "名称：" + cond.name + "\n描述：" + cond.description + "\n";
+            })
+            return conditions
         }
     }
 }

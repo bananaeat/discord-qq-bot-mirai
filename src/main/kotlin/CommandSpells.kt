@@ -54,7 +54,7 @@ private fun searchSpells(key: String, spells: List<Spell>): List<Spell> {
     // return original response
     return spellList
 }
-object CommandSpell : SimpleCommand(PluginMain, "spell", description = "search for a spell") {
+object CommandSpell : SimpleCommand(PluginMain, "spell", description = "查询法术") {
     private val spellsJSON = CommandSpell::class.java.getResource("/pack/spells.json")?.readText()
     private val json = Json {
         ignoreUnknownKeys = true
